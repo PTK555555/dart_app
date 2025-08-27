@@ -20,9 +20,6 @@ void main() async {
     final loginData = jsonDecode(loginRes.body);
     final userId = loginData['id'];
     final username = loginData['username'];
-    // print header and welcome only once
-    print("\n=========== Expense Tracking App =========");
-    print("Welcome $username\n");
 
     while (true) {
       // just the menu here
