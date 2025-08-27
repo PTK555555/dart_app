@@ -22,7 +22,7 @@ void main() async {
 
     print("\n=========== Expense Tracking App =========");
     print("Welcome $username\n");
-    // menu feature
+  
     while (true) {
       print("1. All expenses");
       print("2. Today's expense");
@@ -33,21 +33,25 @@ void main() async {
       stdout.write("Choose: ");
       String? choice = stdin.readLineSync();
 
+
+
       // 1. Show all
       if (choice == "1") {
         var res = await http.get(Uri.parse("http://localhost:3000/expenses"));
         var expenses = jsonDecode(res.body);
         showExpenses(expenses);
       }
-      // 2. Today's expense
+        // 2. Today's expense
       else if (choice == "2") {
         var res = await http.get(
           Uri.parse("http://localhost:3000/expenses/today"),
         );
         var expenses = jsonDecode(res.body);
         showExpenses(expenses);
-      } else if (choice == "3") {
+        
+      } 
         // 3. Search expense
+      else if (choice == "3") {
         stdout.write("Item to search: ");
         final keyword = stdin.readLineSync()?.trim() ?? '';
 
@@ -67,8 +71,9 @@ void main() async {
             showExpenses(expenses);
           }
         }
-      } else if (choice == "4") {
+      } 
         // 4. Add new expense
+      else if (choice == "4") {
         print("===== Add new item =====");
         stdout.write("Item: ");
         final item = stdin.readLineSync()?.trim() ?? '';
@@ -92,7 +97,7 @@ void main() async {
       // 5. Delete an expense
 
       // 6. Exit
-    }
+      }
   } else {
     print("Login failed: ${loginRes.body}");
   }
@@ -106,4 +111,3 @@ void showExpenses(List<dynamic> expenses) {
     total += e['paid'] as int;
   }
   print("Total expenses = ${total}฿\n");
-}
