@@ -32,19 +32,15 @@ void main() async {
       print("6. Exit");
       stdout.write("Choose: ");
       String? choice = stdin.readLineSync();
-
-  // menu feature
-      
+   
       // 1. Show all
       if (choice == "1") {
-        // Show all
         var res = await http.get(Uri.parse("http://localhost:3000/expenses"));
         var expenses = jsonDecode(res.body);
         showExpenses (expenses);
       } 
         // 2. Today's expense
       else if (choice == "2") {
-        // Today's expense
         var res = await http.get(
           Uri.parse("http://localhost:3000/expenses/today"),
         );
@@ -57,14 +53,13 @@ void main() async {
         // 4. Add new expense
 
         // 5. Delete an expense
-        
+          
         // 6. Exit
 
       }
   } else {
     print("Login failed: ${loginRes.body}");
   }
-  
 }
 
 void showExpenses(List<dynamic> expenses) {
@@ -76,4 +71,3 @@ void showExpenses(List<dynamic> expenses) {
   }
   print("Total expenses = ${total}฿\n");
 }
-
