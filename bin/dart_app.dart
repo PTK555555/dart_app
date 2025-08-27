@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 void main() async {
+  // Login Function
   stdout.write("===== Login =====\nUsername: ");
   String username = stdin.readLineSync()!;
   stdout.write("Password: ");
@@ -19,13 +20,15 @@ void main() async {
     final loginData = jsonDecode(loginRes.body);
     final userId = loginData['id'];
     final username = loginData['username'];
-
     // print header and welcome only once
     print("\n=========== Expense Tracking App =========");
     print("Welcome $username\n");
 
     while (true) {
       // just the menu here
+    print("\n=========== Expense Tracking App =========");
+    print("Welcome $username\n");
+  
       print("1. All expenses");
       print("2. Today's expense");
       print("3. Search expense");
@@ -35,20 +38,23 @@ void main() async {
       stdout.write("Choose: ");
       String? choice = stdin.readLineSync();
 
+        
+        // 1. Show all
       if (choice == "1") {
-        // Show all
         var res = await http.get(Uri.parse("http://localhost:3000/expenses"));
         var expenses = jsonDecode(res.body);
         showExpenses(expenses);
-      } else if (choice == "2") {
-        // Today's expense
+      }
+        // 2. Today's expense
+      else if (choice == "2") {
         var res = await http.get(
           Uri.parse("http://localhost:3000/expenses/today"),
         );
         var expenses = jsonDecode(res.body);
         showExpenses(expenses);
-      } else if (choice == "3") {
-        // Search expense
+      } 
+        // 3. Search expense
+      else if (choice == "3") {
         stdout.write("Item to search: ");
         final keyword = stdin.readLineSync()?.trim() ?? '';
 
@@ -68,8 +74,9 @@ void main() async {
             showExpenses(expenses);
           }
         }
-      } else if (choice == "4") {
-        // Add new expense
+      } 
+        // 4. Add new expense
+      else if (choice == "4") {
         print("===== Add new item =====");
         stdout.write("Item: ");
         final item = stdin.readLineSync()?.trim() ?? '';
@@ -89,7 +96,7 @@ void main() async {
           print("Failed to insert: ${res.body}\n");
         }
       } else if (choice == "5") {
-        // Delete an expense
+        // 5. Delete an expense
         print("===== Delete an item =====");
         stdout.write("Item id: ");
         final idStr = stdin.readLineSync()?.trim() ?? '';
@@ -109,7 +116,7 @@ void main() async {
           }
         }
       } else if (choice == "6") {
-        // Exit
+        // 6. Exit
         print("----- Bye -------");
         break;
       } else {
