@@ -32,23 +32,42 @@ void main() async {
       print("6. Exit");
       stdout.write("Choose: ");
       String? choice = stdin.readLineSync();
-
-  // menu feature
-      
+   
       // 1. Show all
-
+      if (choice == "1") {
+        var res = await http.get(Uri.parse("http://localhost:3000/expenses"));
+        var expenses = jsonDecode(res.body);
+        showExpenses (expenses);
+      } 
         // 2. Today's expense
-
-        // 3. Search expense
+      else if (choice == "2") {
+        var res = await http.get(
+          Uri.parse("http://localhost:3000/expenses/today"),
+        );
+        var expenses = jsonDecode(res.body);
+        showExpenses(expenses);
+      }
+      
+        // 3. Search expensee
 
         // 4. Add new expense
 
         // 5. Delete an expense
-
+          
         // 6. Exit
 
       }
   } else {
     print("Login failed: ${loginRes.body}");
   }
+}
+
+void showExpenses(List<dynamic> expenses) {
+  int total = 0;
+  print("----------- Expenses -----------");
+  for (var e in expenses) {
+    print("${e['item']} : ${e['paid']}฿ : ${e['date']}");
+    total += e['paid'] as int;
+  }
+  print("Total expenses = ${total}฿\n");
 }
