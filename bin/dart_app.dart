@@ -22,8 +22,8 @@ void main() async {
 
     print("\n=========== Expense Tracking App =========");
     print("Welcome $username\n");
-      // menu feature
-        while (true) {
+  
+    while (true) {
       print("1. All expenses");
       print("2. Today's expense");
       print("3. Search expense");
@@ -32,13 +32,15 @@ void main() async {
       print("6. Exit");
       stdout.write("Choose: ");
       String? choice = stdin.readLineSync();
-   
+
+
+
       // 1. Show all
       if (choice == "1") {
         var res = await http.get(Uri.parse("http://localhost:3000/expenses"));
         var expenses = jsonDecode(res.body);
-        showExpenses (expenses);
-      } 
+        showExpenses(expenses);
+      }
         // 2. Today's expense
       else if (choice == "2") {
         var res = await http.get(
@@ -46,16 +48,55 @@ void main() async {
         );
         var expenses = jsonDecode(res.body);
         showExpenses(expenses);
-      }
-      
-        // 3. Search expensee
+        
+      } 
+        // 3. Search expense
+      else if (choice == "3") {
+        stdout.write("Item to search: ");
+        final keyword = stdin.readLineSync()?.trim() ?? '';
 
+        final uri = Uri.parse(
+          "http://localhost:3000/expenses/search?q=${Uri.encodeQueryComponent(keyword)}",
+        );
+
+        final res = await http.get(uri);
+
+        if (res.statusCode != 200) {
+          print("Search failed: ${res.body}\n");
+        } else {
+          final List<dynamic> expenses = jsonDecode(res.body);
+          if (expenses.isEmpty) {
+            print("No item: $keyword\n");
+          } else {
+            showExpenses(expenses);
+          }
+        }
+      } 
         // 4. Add new expense
+      else if (choice == "4") {
+        print("===== Add new item =====");
+        stdout.write("Item: ");
+        final item = stdin.readLineSync()?.trim() ?? '';
+        stdout.write("Paid: ");
+        final paidStr = stdin.readLineSync()?.trim() ?? '0';
+        final paid = int.tryParse(paidStr) ?? 0;
 
-        // 5. Delete an expense
-          
-        // 6. Exit
+        final res = await http.post(
+          Uri.parse("http://localhost:3000/expenses"),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode({"user_id": userId, "item": item, "paid": paid}),
+        );
 
+        if (res.statusCode == 200) {
+          print("Inserted!\n");
+        } else {
+          print("Failed to insert: ${res.body}\n");
+        }
+      }
+
+      // 5. Delete an expense
+
+      // 6. Exit
       }
   } else {
     print("Login failed: ${loginRes.body}");
@@ -70,4 +111,3 @@ void showExpenses(List<dynamic> expenses) {
     total += e['paid'] as int;
   }
   print("Total expenses = ${total}฿\n");
-}
