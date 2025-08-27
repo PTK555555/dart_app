@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 void main() async {
-  // Login Function
   stdout.write("===== Login =====\nUsername: ");
   String username = stdin.readLineSync()!;
   stdout.write("Password: ");
   String password = stdin.readLineSync()!;
 
+  // --- Login Request ---
   var loginRes = await http.post(
     Uri.parse("http://localhost:3000/login"),
     headers: {"Content-Type": "application/json"},
@@ -20,10 +20,12 @@ void main() async {
     final userId = loginData['id'];
     final username = loginData['username'];
 
+    // print header and welcome only once
     print("\n=========== Expense Tracking App =========");
     print("Welcome $username\n");
-  
+
     while (true) {
+      // just the menu here
       print("1. All expenses");
       print("2. Today's expense");
       print("3. Search expense");
@@ -33,25 +35,20 @@ void main() async {
       stdout.write("Choose: ");
       String? choice = stdin.readLineSync();
 
-
-
-      // 1. Show all
       if (choice == "1") {
+        // Show all
         var res = await http.get(Uri.parse("http://localhost:3000/expenses"));
         var expenses = jsonDecode(res.body);
         showExpenses(expenses);
-      }
-        // 2. Today's expense
-      else if (choice == "2") {
+      } else if (choice == "2") {
+        // Today's expense
         var res = await http.get(
           Uri.parse("http://localhost:3000/expenses/today"),
         );
         var expenses = jsonDecode(res.body);
         showExpenses(expenses);
-        
-      } 
-        // 3. Search expense
-      else if (choice == "3") {
+      } else if (choice == "3") {
+        // Search expense
         stdout.write("Item to search: ");
         final keyword = stdin.readLineSync()?.trim() ?? '';
 
@@ -71,9 +68,8 @@ void main() async {
             showExpenses(expenses);
           }
         }
-      } 
-        // 4. Add new expense
-      else if (choice == "4") {
+      } else if (choice == "4") {
+        // Add new expense
         print("===== Add new item =====");
         stdout.write("Item: ");
         final item = stdin.readLineSync()?.trim() ?? '';
@@ -92,12 +88,34 @@ void main() async {
         } else {
           print("Failed to insert: ${res.body}\n");
         }
-      }
+      } else if (choice == "5") {
+        // Delete an expense
+        print("===== Delete an item =====");
+        stdout.write("Item id: ");
+        final idStr = stdin.readLineSync()?.trim() ?? '';
+        final id = int.tryParse(idStr);
 
-      // 5. Delete an expense
+        if (id == null) {
+          print("Invalid id\n");
+        } else {
+          final res = await http.delete(
+            Uri.parse("http://localhost:3000/expenses/$id"),
+          );
 
-      // 6. Exit
+          if (res.statusCode == 200) {
+            print("Deleted!\n");
+          } else {
+            print("Failed to delete: ${res.body}\n");
+          }
+        }
+      } else if (choice == "6") {
+        // Exit
+        print("----- Bye -------");
+        break;
+      } else {
+        print("Invalid choice");
       }
+    }
   } else {
     print("Login failed: ${loginRes.body}");
   }
@@ -111,3 +129,4 @@ void showExpenses(List<dynamic> expenses) {
     total += e['paid'] as int;
   }
   print("Total expenses = ${total}฿\n");
+}
