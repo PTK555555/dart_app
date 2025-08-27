@@ -33,7 +33,9 @@ void main() async {
       stdout.write("Choose: ");
       String? choice = stdin.readLineSync();
 
-        // 1. Show all
+  // menu feature
+      
+      // 1. Show all
 
         // 2. Today's expense
 
@@ -44,7 +46,7 @@ void main() async {
         // 5. Delete an expense
 
         // 6. Exit
-        
+
       }
   } else {
     print("Login failed: ${loginRes.body}");
